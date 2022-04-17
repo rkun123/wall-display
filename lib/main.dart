@@ -96,6 +96,7 @@ class MyHomePage extends ConsumerWidget {
       s.subscribe();
       var ws = WeatherSubscriber(ref);
       ws.subscribe();
+      ws.updateTempImmediately();
       var datetimeSubscriber = DatetimeSubscriber(ref);
       datetimeSubscriber.subscribe();
     }

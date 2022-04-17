@@ -60,31 +60,35 @@ class WeatherSubscriber {
   WidgetRef ref;
   WeatherSubscriber(this.ref);
 
-  subscribe() async {
-    Future _checkTemp(_) async {
-      var f = NumberFormat('00');
-      final date =
-          '${f.format(DateTime.now().year)}${f.format(DateTime.now().month)}${f.format(DateTime.now().day)}';
-      final uri = Uri.parse(
-          'https://www.jma.go.jp/bosai/amedas/data/point/$amedasNumber/${date}_00.json');
-      try {
-        debugPrint('Check temperature');
-        setLoadingState(ref, true);
-        var response = await http.get(uri);
-        var responseBody = json.decode(response.body);
-        var latestAmedasData = responseBody.values.last;
-        double temp = latestAmedasData['temp'][0];
-        debugPrint('temp: ${temp.toString()}');
-        ref.read(temperatureProvider.notifier).state = temp;
-        setLoadingState(ref, false);
-      } catch (e) {
-        debugPrint('errored: ${e.toString()}');
-      }
+  Future _checkTemp() async {
+    var f = NumberFormat('00');
+    final date =
+        '${f.format(DateTime.now().year)}${f.format(DateTime.now().month)}${f.format(DateTime.now().day)}';
+    final uri = Uri.parse(
+        'https://www.jma.go.jp/bosai/amedas/data/point/$amedasNumber/${date}_00.json');
+    try {
+      debugPrint('Check temperature');
+      // setLoadingState(ref, true);
+      var response = await http.get(uri);
+      var responseBody = json.decode(response.body);
+      var latestAmedasData = responseBody.values.last;
+      double temp = latestAmedasData['temp'][0];
+      debugPrint('temp: ${temp.toString()}');
+      ref.read(temperatureProvider.notifier).state = temp;
+      // setLoadingState(ref, false);
+    } catch (e) {
+      debugPrint('errored: ${e.toString()}');
     }
+  }
 
-    await _checkTemp(null);
+  subscribe() async {
+    // await _checkTemp();
     debugPrint('_checkTemp');
-    Timer.periodic(const Duration(minutes: 10), _checkTemp);
+    Timer.periodic(const Duration(minutes: 10), (_) => _checkTemp());
+  }
+
+  updateTempImmediately() async {
+    _checkTemp();
   }
 }
 
@@ -101,5 +105,5 @@ class DatetimeSubscriber {
 }
 
 void setLoadingState(WidgetRef ref, bool loading) {
-  ref.read(loadingProvider.notifier).state = loading;
+  ref.watch(loadingProvider.notifier).state = loading;
 }
