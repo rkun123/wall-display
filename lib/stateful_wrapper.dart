@@ -14,9 +14,7 @@ class _StatefulWrapperState extends State<StatefulWrapper> {
   @override
   void initState() {
     super.initState();
-    if (widget.onInit != null) {
-      widget.onInit();
-    }
+    widget.onInit();
   }
 
   @override

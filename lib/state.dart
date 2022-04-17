@@ -20,3 +20,5 @@ final temperatureProvider = StateProvider<double>((ref) => -274);
 final datetimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
 final loadingProvider = StateProvider<bool>((ref) => false);
+
+final chanceOfRainProvider = StateProvider<int>((ref) => -1);

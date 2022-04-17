@@ -94,11 +94,16 @@ class MyHomePage extends ConsumerWidget {
       // ref.read(subscribingProvider.notifier).state = true;
       var s = Subscriber(ref);
       s.subscribe();
-      var ws = WeatherSubscriber(ref);
-      ws.subscribe();
-      ws.updateTempImmediately();
+      var weatherSubscriber = WeatherSubscriber(ref);
+      weatherSubscriber.subscribe();
+      weatherSubscriber.updateTempImmediately();
+
       var datetimeSubscriber = DatetimeSubscriber(ref);
       datetimeSubscriber.subscribe();
+
+      var chanceOfLainSubscriber = ChanceOfLainSubscriber(ref);
+      chanceOfLainSubscriber.subscribe();
+      chanceOfLainSubscriber.updateChanceOfLainImmediately();
     }
 
     return StatefulWrapper(
@@ -178,6 +183,15 @@ class MyHomePage extends ConsumerWidget {
                                   tempFormat = '不明';
                                 }
                                 return _statusRow('気温', '$tempFormat℃');
+                              }(),
+                              () {
+                                final chanceOfRain =
+                                    ref.watch(chanceOfRainProvider);
+                                var formatted = '不明';
+                                if (chanceOfRain >= 0) {
+                                  formatted = '$chanceOfRain%';
+                                }
+                                return _statusRow('降水確率', formatted);
                               }()
                             ],
                           )),
